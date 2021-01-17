@@ -1,32 +1,46 @@
 import React, { useState, useEffect } from "react";
-import { Card, ListGroup, ListGroupItem } from "react-bootstrap";
+import { Card, CardDeck, ListGroup, ListGroupItem } from "react-bootstrap";
 import PaginationBar from "../component/PaginationBar";
 // import { BrowserRouter as Link } from "react-router-dom";
 // const API_KEY = process.env.REACT_APP_TMDB_API_KEY;
 // const API_URL = process.env.REACT_APP_TMDB_API_URL;
-function NowPlayingPage() {
+function NowPlayingPage({ type }) {
   const [movies, setMovies] = useState([]);
   const [searchInput, setSearchInput] = useState("");
   const [query, setQuery] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageNum, setPageNum] = useState(1);
+  const limit = 20;
+  const [totalPageNum, setTotalPageNum] = useState(1);
 
   useEffect(() => {
     async function fetchData() {
-      let url = `https://api.themoviedb.org/3/movie/now_playing?api_key=ec7f0956da9eab0fcf29358ab7a998b4`;
-      if (query) {
-        url = url + `&q=${query}`;
+      let endpoint = "now_playing";
+      if (type === "top_rated") {
+        endpoint = "top_rated";
       }
+      if (type === "upcoming") {
+        endpoint = "upcoming";
+      }
+      let url = `https://api.themoviedb.org/3/movie/${endpoint}?api_key=ec7f0956da9eab0fcf29358ab7a998b4&page=${pageNum}`;
+
       const response = await fetch(url);
       const data = await response.json();
       setMovies(data.results);
+      setTotalPageNum(data.total_pages);
     }
     fetchData();
-  }, [query]);
+  }, [type, pageNum]);
   const handleSearchFormSubmit = (e) => {
     e.preventDefault();
     setQuery(searchInput);
   };
   const handleSearchInputChange = (e) => {
     setSearchInput(e.target.value);
+  };
+  const handleChangePage = (page) => {
+    setPageNum(page);
+    setCurrentPage(page);
   };
   return (
     <div>
@@ -38,40 +52,46 @@ function NowPlayingPage() {
         />
         <input type="submit" value="Search" />
       </form>
-      <PaginationBar />
-      {movies.map((m) => (
-        <div>
-          {/* <CardDeck> */}
-          <Card style={{ width: "18rem" }}>
-            <Card.Img
-              variant="top"
-              src={`https://image.tmdb.org/t/p/w500/${m.backdrop_path}`}
-            />
-            <Card.Body>
-              <Card.Title key={m.id}>{m.title}</Card.Title>
-              <Card.Text>{m.overview}</Card.Text>
-              {/* <Card.Text>
+      <PaginationBar
+        currentPage={currentPage}
+        totalPageNum={totalPageNum}
+        limit={limit}
+        click={handleChangePage}
+      />
+      <CardDeck>
+        {movies.map((m) => (
+          <div>
+            <Card style={{ width: "18rem" }}>
+              <Card.Img
+                variant="top"
+                src={`https://image.tmdb.org/t/p/w500/${m.backdrop_path}`}
+              />
+              <Card.Body>
+                <Card.Title key={m.id}>{m.title}</Card.Title>
+                <Card.Text>{m.overview}</Card.Text>
+                {/* <Card.Text>
                 <b>Release:</b> {m.release_date}
               </Card.Text>
               <Card.Text>
                 <b>Rating:</b> {m.vote_average} <b>from</b> {m.vote_count} views
               </Card.Text> */}
-            </Card.Body>
-            <ListGroup className="list-group-flush">
-              <ListGroupItem>
-                <b>Release:</b> {m.release_date}
-              </ListGroupItem>
-              <ListGroupItem>
-                <b>Rating:</b> {m.vote_average} <b>from</b> {m.vote_count} views
-              </ListGroupItem>
-            </ListGroup>
-            {/* <Link to={`/movies/${m.id}`} key={m.id}>
+              </Card.Body>
+              <ListGroup className="list-group-flush">
+                <ListGroupItem>
+                  <b>Release:</b> {m.release_date}
+                </ListGroupItem>
+                <ListGroupItem>
+                  <b>Rating:</b> {m.vote_average} <b>from</b> {m.vote_count}{" "}
+                  views
+                </ListGroupItem>
+              </ListGroup>
+              {/* <Link to={`/movies/${m.id}`} key={m.id}>
               <Button variant="primary">View Details</Button>
             </Link> */}
-          </Card>
-          {/* </CardDeck> */}
-        </div>
-      ))}
+            </Card>
+          </div>
+        ))}
+      </CardDeck>
     </div>
   );
 }

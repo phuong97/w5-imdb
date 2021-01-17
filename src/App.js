@@ -13,7 +13,16 @@ function App() {
 
         <Switch>
           <Route exact path="/" component={NowPlayingPage} />
-          <Route exact path="/movie/:id" component={MovieDetailPage} />
+
+          <Route
+            path="/movies/top_rated"
+            render={(props) => <NowPlayingPage {...props} type="top_rated" />}
+          />
+          <Route
+            path="/movies/upcoming"
+            render={(props) => <NowPlayingPage {...props} type="upcoming" />}
+          />
+          <Route path="/movie/:id" component={MovieDetailPage} />
         </Switch>
       </Router>
     </div>

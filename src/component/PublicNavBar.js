@@ -12,8 +12,11 @@ function PublicNavBar() {
           <Nav.Link as={Link} to="/">
             Now Playing
           </Nav.Link>
-          <Nav.Link as={Link} to="/movie/:id">
-            Movie List
+          <Nav.Link as={Link} to="/movies/top_rated">
+            Top Rated
+          </Nav.Link>
+          <Nav.Link as={Link} to="/movies/upcoming">
+            Upcoming
           </Nav.Link>
         </Nav>
       </Navbar>

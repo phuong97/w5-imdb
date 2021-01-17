@@ -6,7 +6,7 @@ function PaginationBar(props) {
       <Pagination
         activePage={props.currentPage}
         onChange={props.click}
-        pageRangeDisplayed={2}
+        pageRangeDisplayed={4}
         itemsCountPerPage={props.limit}
         totalItemsCount={props.totalPageNum * props.limit}
         itemClass={"page-item"}
