@@ -1,7 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { Card, CardDeck, ListGroup, ListGroupItem } from "react-bootstrap";
+import {
+  Card,
+  CardDeck,
+  ListGroup,
+  ListGroupItem,
+  Button,
+} from "react-bootstrap";
 import PaginationBar from "../component/PaginationBar";
-// import { BrowserRouter as Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 const API_KEY = process.env.REACT_APP_TMDB_API_KEY;
 const API_URL = process.env.REACT_APP_TMDB_API_URL;
 function NowPlayingPage({ type }) {
@@ -13,7 +19,7 @@ function NowPlayingPage({ type }) {
   const [filterMovies, setFilterMovies] = useState([]);
   const limit = 20;
   const [totalPageNum, setTotalPageNum] = useState(1);
-  const [sortMovies, setSortMovies] = useState([]);
+  // const [sortMovies, setSortMovies] = useState([]);
   useEffect(() => {
     async function fetchData() {
       let endpoint = "now_playing";
@@ -72,7 +78,7 @@ function NowPlayingPage({ type }) {
       <CardDeck>
         {filterMovies.map((m) => (
           <div>
-            <Card style={{ width: "18rem" }}>
+            <Card style={{ width: "18rem" }} key={m.id}>
               <Card.Img
                 variant="top"
                 src={`https://image.tmdb.org/t/p/w500/${m.backdrop_path}`}
@@ -96,14 +102,14 @@ function NowPlayingPage({ type }) {
                   views
                 </ListGroupItem>
               </ListGroup>
-              {/* <Link to={`/movies/${m.id}`} key={m.id}>
-              <Button variant="primary">View Details</Button>
-            </Link> */}
+              <Link to={`/movie/${m.id}`} key={m.id}>
+                <Button variant="primary">View Details</Button>
+              </Link>
             </Card>
           </div>
         ))}
       </CardDeck>
-      {sortMovies.sort((a, b) => (
+      {/* {sortMovies.sort((a, b) => (
         <div>
           <Card>
             <Card.Body>
@@ -111,7 +117,7 @@ function NowPlayingPage({ type }) {
             </Card.Body>
           </Card>
         </div>
-      ))}
+      ))} */}
     </div>
   );
 }

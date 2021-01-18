@@ -22,7 +22,7 @@ function App() {
             path="/movies/upcoming"
             render={(props) => <NowPlayingPage {...props} type="upcoming" />}
           />
-          <Route path="/movie/:id" component={MovieDetailPage} />
+          <Route exact path="/movie/:id" component={MovieDetailPage} />
         </Switch>
       </Router>
     </div>
