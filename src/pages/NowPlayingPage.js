@@ -2,17 +2,18 @@ import React, { useState, useEffect } from "react";
 import { Card, CardDeck, ListGroup, ListGroupItem } from "react-bootstrap";
 import PaginationBar from "../component/PaginationBar";
 // import { BrowserRouter as Link } from "react-router-dom";
-// const API_KEY = process.env.REACT_APP_TMDB_API_KEY;
-// const API_URL = process.env.REACT_APP_TMDB_API_URL;
+const API_KEY = process.env.REACT_APP_TMDB_API_KEY;
+const API_URL = process.env.REACT_APP_TMDB_API_URL;
 function NowPlayingPage({ type }) {
   const [movies, setMovies] = useState([]);
   const [searchInput, setSearchInput] = useState("");
-  const [query, setQuery] = useState("");
+  // const [query, setQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [pageNum, setPageNum] = useState(1);
+  const [filterMovies, setFilterMovies] = useState([]);
   const limit = 20;
   const [totalPageNum, setTotalPageNum] = useState(1);
-
+  const [sortMovies, setSortMovies] = useState([]);
   useEffect(() => {
     async function fetchData() {
       let endpoint = "now_playing";
@@ -22,19 +23,22 @@ function NowPlayingPage({ type }) {
       if (type === "upcoming") {
         endpoint = "upcoming";
       }
-      let url = `https://api.themoviedb.org/3/movie/${endpoint}?api_key=ec7f0956da9eab0fcf29358ab7a998b4&page=${pageNum}`;
-
+      // let url = `https://api.themoviedb.org/3/movie/${endpoint}?api_key=ec7f0956da9eab0fcf29358ab7a998b4&page=${pageNum}`;
+      let url = `${API_URL}/movie/${endpoint}?api_key=${API_KEY}&page=${pageNum}`;
+      console.log(url);
       const response = await fetch(url);
       const data = await response.json();
       setMovies(data.results);
+      setFilterMovies(data.results);
       setTotalPageNum(data.total_pages);
     }
     fetchData();
   }, [type, pageNum]);
-  const handleSearchFormSubmit = (e) => {
-    e.preventDefault();
-    setQuery(searchInput);
-  };
+
+  // const handleSearchFormSubmit = (e) => {
+  //   e.preventDefault();
+  //   setQuery(searchInput);
+  // };
   const handleSearchInputChange = (e) => {
     setSearchInput(e.target.value);
   };
@@ -42,9 +46,16 @@ function NowPlayingPage({ type }) {
     setPageNum(page);
     setCurrentPage(page);
   };
+
+  useEffect(() => {
+    let newMovies = movies.filter((m) =>
+      m.title.toLowerCase().startsWith(searchInput.toLowerCase())
+    );
+    setFilterMovies(newMovies);
+  }, [searchInput, movies]);
   return (
     <div>
-      <form onSubmit={handleSearchFormSubmit}>
+      <form>
         <input
           type="text"
           onChange={handleSearchInputChange}
@@ -59,7 +70,7 @@ function NowPlayingPage({ type }) {
         click={handleChangePage}
       />
       <CardDeck>
-        {movies.map((m) => (
+        {filterMovies.map((m) => (
           <div>
             <Card style={{ width: "18rem" }}>
               <Card.Img
@@ -92,6 +103,15 @@ function NowPlayingPage({ type }) {
           </div>
         ))}
       </CardDeck>
+      {sortMovies.sort((a, b) => (
+        <div>
+          <Card>
+            <Card.Body>
+              <Card.Text>{a.popularity - b.popularity}</Card.Text>
+            </Card.Body>
+          </Card>
+        </div>
+      ))}
     </div>
   );
 }
