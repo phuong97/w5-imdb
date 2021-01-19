@@ -36,3 +36,34 @@
     transform: rotate(360deg);
   }
 }
+
+/* ========================================================
+                  MODAL VIDEO STYLE
+==========================================================*/
+.detail-page-container {
+  width: 100%;
+  height: 40em;
+}
+.modal-video {
+  position: absolute;
+  top: 25%;
+  left: 25%;
+}
+
+.modal-video-close-btn {
+  height: 1.7em;
+  width: 1.7em;
+  border: 1px solid gray;
+  border-radius: 5px;
+  background-color: transparent;
+  position: absolute;
+  right: 0;
+  top: -34px;
+}
+
+.modal-video-close-btn:after {
+  content: "\f00d";
+  font-family: "Font Awesome\ 5 Free";
+  font-weight: 900;
+  color: gray;
+}
